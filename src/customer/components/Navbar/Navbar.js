@@ -21,14 +21,14 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { navigationData } from "./NavigationData";
-import { Avatar, ButtonBase, Menu } from "@mui/material";
+import { Avatar, Menu } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import MenuItem from "@mui/material/MenuItem";
 import storeLogo from "../../../assets/fashion-store-logo.jpg";
 import { useNavigate } from "react-router-dom";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(" ")
 }
 
 export default function Navbar() {
@@ -50,9 +50,9 @@ export default function Navbar() {
     setOpenAuthModal(true);
   };
 
-  const handleClose = () => {
-    setOpenAuthModal(false);
-  };
+  // const handleClose = () => {
+  //   setOpenAuthModal(false);
+  // };
 
   const handleCategoryClick = (category, section, item) => {
     navigate(`/${category.id}/${section.id}/${item.id}`);
