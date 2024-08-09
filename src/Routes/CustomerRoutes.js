@@ -18,6 +18,8 @@ export default function CustomerRoutes() {
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/signin" element={<Home />} />
+        <Route path="/signup" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/:levelOne/:levelTwo/:levelThree" element={<Product />} />
         <Route path="/product/:id" element={<ProductDetail />} />

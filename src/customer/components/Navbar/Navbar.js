@@ -26,6 +26,7 @@ import { deepPurple } from "@mui/material/colors";
 import MenuItem from "@mui/material/MenuItem";
 import storeLogo from "../../../assets/fashion-store-logo.jpg";
 import { useNavigate } from "react-router-dom";
+import AuthModal from "../../Auth/AuthModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -50,9 +51,9 @@ export default function Navbar() {
     setOpenAuthModal(true);
   };
 
-  // const handleClose = () => {
-  //   setOpenAuthModal(false);
-  // };
+  const handleClose = () => {
+    setOpenAuthModal(false);
+  };
 
   const handleCategoryClick = (category, section, item) => {
     navigate(`/${category.id}/${section.id}/${item.id}`);
@@ -185,7 +186,7 @@ export default function Navbar() {
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                {true ? (
+                {false ? (
                   <div>
                     <Avatar
                       className="text-white"
@@ -218,7 +219,7 @@ export default function Navbar() {
                   <>
                     <Button
                       onClick={handleOpen}
-                      className=" font-medium text-gray-900 hover:text-gray-800"
+                      className=" font-medium text-grey-900 hover:text-gray-800"
                     >
                       Signin
                     </Button>
@@ -408,7 +409,7 @@ export default function Navbar() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {true ? (
+                  {false ? (
                     <div>
                       <Avatar
                         className="text-white"
@@ -445,7 +446,7 @@ export default function Navbar() {
                     <>
                       <Button
                         onClick={handleOpen}
-                        className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                        className="text-sm font-medium text-blue-700 hover:text-gray-800"
                       >
                         Signin
                       </Button>
@@ -481,6 +482,8 @@ export default function Navbar() {
           </div>
         </nav>
       </header>
+
+      <AuthModal handleClose={handleClose} open={openAuthModal}/>
     </div>
   );
 }
