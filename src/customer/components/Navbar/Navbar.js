@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -22,22 +22,39 @@ import {
 } from "@heroicons/react/24/outline";
 import { navigationData } from "./NavigationData";
 import { Avatar, Menu } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
 import MenuItem from "@mui/material/MenuItem";
 import storeLogo from "../../../assets/fashion-store-logo.jpg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AuthModal from "../../Auth/AuthModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile, logout } from "../../../Features/authSlice";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
+
+//  Genrating random bgColor for avatar
+const getRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [openAuthModal, setOpenAuthModal] = useState(false);
+  const [avatarColor, setAvatarColor] = useState(getRandomColor());
   const [anchorEl, setAnchorE1] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { user, jwt } = useSelector((state) => state.auth);
+  const jwtTokenLocalStorage = localStorage.getItem("jwt");
 
   const handleUserClick = (e) => {
     setAnchorE1(e.currentTarget);
@@ -59,6 +76,30 @@ export default function Navbar() {
     navigate(`/${category.id}/${section.id}/${item.id}`);
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    handleCloseUserMenu();
+  };
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUserProfile(jwt));
+    }
+  }, [jwtTokenLocalStorage, jwt]);
+
+  useEffect(() => {
+    if (user) {
+      handleClose();
+    }
+    if (location.pathname === "/signin" || location.pathname === "/signup") {
+      navigate(-1);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    setAvatarColor(getRandomColor());
+  }, [user]);
 
   return (
     <div className="bg-[#f2f2f2] relative z-50">
@@ -186,7 +227,7 @@ export default function Navbar() {
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                {false ? (
+                {user ? (
                   <div>
                     <Avatar
                       className="text-white"
@@ -195,13 +236,13 @@ export default function Navbar() {
                       arial-haspopup="true"
                       arial-expanded={open ? "true" : undefined}
                       sx={{
-                        bgcolor: "#679e37",
+                        bgcolor: avatarColor, // Use the random color generator function
                         color: "white",
                         cursor: "pointer",
                       }}
                     >
                       {" "}
-                      R{" "}
+                      {user?.firstName[0].toUpperCase()}
                     </Avatar>
                     <Menu
                       id="basic-menu"
@@ -212,7 +253,9 @@ export default function Navbar() {
                     >
                       <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
                       <MenuItem>My Orders</MenuItem>
-                      <MenuItem>Logout</MenuItem>
+                      <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                        Logout
+                      </MenuItem>
                     </Menu>
                   </div>
                 ) : (
@@ -409,7 +452,7 @@ export default function Navbar() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {false ? (
+                  {user ? (
                     <div>
                       <Avatar
                         className="text-white"
@@ -418,13 +461,13 @@ export default function Navbar() {
                         arial-haspopup="true"
                         arial-expanded={open ? "true" : undefined}
                         sx={{
-                          bgcolor: deepPurple[500],
+                          bgcolor: avatarColor, // Use the random color generator function
                           color: "white",
                           cursor: "pointer",
                         }}
                       >
                         {" "}
-                        R{" "}
+                        {user?.firstName[0].toUpperCase()}
                       </Avatar>
                       <Menu
                         id="basic-menu"
@@ -439,7 +482,18 @@ export default function Navbar() {
                         <MenuItem onClick={() => navigate("/account/order")}>
                           My Orders
                         </MenuItem>
-                        <MenuItem>Logout</MenuItem>
+                        <div className="border-b border-gray-500 opacity-60 mx-1"></div>
+                        <MenuItem
+                          onClick={handleLogout}
+                          sx={{ color: "red", alignItems: "center" }}
+                        >
+                          <span>
+                            <LogoutIcon
+                              sx={{ marginRight: "3px", fontSize: "20px" }}
+                            />
+                          </span>
+                          <span>Logout</span>
+                        </MenuItem>
                       </Menu>
                     </div>
                   ) : (
@@ -483,7 +537,7 @@ export default function Navbar() {
         </nav>
       </header>
 
-      <AuthModal handleClose={handleClose} open={openAuthModal}/>
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
     </div>
   );
 }

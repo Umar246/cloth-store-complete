@@ -1,9 +1,20 @@
 import { Button, Grid, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile, signup } from "../../Features/authSlice";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwtTokenLocalStorage = localStorage.getItem("jwt");
+  const { user, jwt, loading, error } = useSelector((state) => state.auth); // This is same as:  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUserProfile(jwt));
+    }
+  }, [jwtTokenLocalStorage, jwt]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,9 +25,12 @@ export default function Signup() {
       lastName: data.get("lastName"),
       email: data.get("email"),
       password: data.get("password"),
+      mobile: data.get("mobile"),
     };
 
     console.log("userData: ", userData);
+
+    dispatch(signup(userData));
   };
 
   return (
@@ -57,7 +71,7 @@ export default function Signup() {
               autoComplete="email"
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <TextField
               required
               size="medium"
@@ -67,6 +81,18 @@ export default function Signup() {
               label="Password"
               fullWidth
               autoComplete="password"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              size="medium"
+              type="tel" // Change 'type' to 'tel' for mobile numbers
+              id="mobile"
+              name="mobile"
+              label="Mobile Number" // Change label to "Mobile Number"
+              fullWidth
+              autoComplete="tel" // Change autocomplete to "tel"
+              inputProps={{ maxLength: 10 }} // Optionally, set maxLength for mobile number
             />
           </Grid>
           <Grid item xs={12}>
@@ -85,8 +111,16 @@ export default function Signup() {
 
       <div className="flex justify-center flex-col items-center">
         <div className="pb-0 pt-4 flex items-center">
-          <p className="text-sm sm:text-normal">If you already have an account ?</p>
-          <Button onClick={() => navigate("/signin")} className="ml-5" size="small">Sign In</Button>
+          <p className="text-sm sm:text-normal">
+            If you already have an account ?
+          </p>
+          <Button
+            onClick={() => navigate("/signin")}
+            className="ml-5"
+            size="small"
+          >
+            Sign In
+          </Button>
         </div>
       </div>
     </div>

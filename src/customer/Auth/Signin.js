@@ -1,9 +1,12 @@
 import { Button, Grid, TextField } from "@mui/material";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signin } from "../../Features/authSlice";
 
 export default function Signin() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,6 +18,8 @@ export default function Signin() {
     };
 
     console.log("userData: ", userData);
+
+    dispatch(signin(userData));
   };
 
   return (
@@ -53,7 +58,7 @@ export default function Signin() {
               size="large"
               sx={{ padding: "0.8rem 0" }}
             >
-              Sign Up
+              Sign In
             </Button>
           </Grid>
         </Grid>
@@ -61,8 +66,16 @@ export default function Signin() {
 
       <div className="flex justify-center flex-col items-center">
         <div className="pb-0 pt-4 flex items-center">
-          <p className="text-sm sm:text-normal">If you don't have an account ?</p>
-          <Button onClick={() => navigate("/signup")} className="ml-5" size="small">Sign Up</Button>
+          <p className="text-sm sm:text-normal">
+            If you don't have an account ?
+          </p>
+          <Button
+            onClick={() => navigate("/signup")}
+            className="ml-5"
+            size="small"
+          >
+            Sign Up
+          </Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import React from "react";
 import Signup from "./Signup";
 import Signin from "./Signin";
@@ -39,7 +39,7 @@ export default function AuthModal({ handleClose, open }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={responsiveStyle}>
-          {location.pathname === "/signin" ? <Signin /> : <Signup />}
+          {location.pathname === "/signup" ? <Signup /> : <Signin />}
         </Box>
       </Modal>
     </div>
